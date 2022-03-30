@@ -289,14 +289,39 @@ To match multi-position tokens with an `AND` conjunction instead, set
 
 [source,console]
 ----
-GET /_search
+POST superonline-surveymodel/_doc/_search
 {
+  {
+  "size": 0,
+  "aggs": {
+    "userName": {
+      "terms": {
+        "field": "userName.keyword"
+      },
+     "aggs": {
+        "avg by userName": {
+          "avg": {
+            "field": "mmaScore"
+          }
+        }
+      }
+    }
+  },
   "query": {
-    "simple_query_string": {
-      "query": "ny city",
-      "auto_generate_synonyms_phrase_query": false
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "replyDate": {
+              "gte": "2022-02-01T00:00:00",
+              "lte": "2022-03-01T00:00:00"
+            }
+          }
+        }
+      ]
     }
   }
+}
 }
 ----
 
